@@ -17,7 +17,7 @@ log = get_logger(__name__)
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("input_dir", type=Path)
-    parser.add_argument("--preset", choices=sorted(PRESETS), default="v2")
+    parser.add_argument("--preset", choices=sorted(PRESETS), default="advanced")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args(argv)
     args.out.mkdir(parents=True, exist_ok=True)

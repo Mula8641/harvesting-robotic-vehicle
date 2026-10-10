@@ -1,6 +1,6 @@
 import numpy as np
 
-from tomato_vision.config.presets import ORIGINAL, ORIGINAL_CONTROL, V2
+from tomato_vision.config.presets import ORIGINAL, ORIGINAL_CONTROL, ADVANCED
 from tomato_vision.config.settings import HsvRange
 from tomato_vision.core.preprocess import brighten, flip_vertical
 
@@ -21,8 +21,8 @@ def test_original_control_matches_the_script():
     assert ORIGINAL_CONTROL.real_width_cm == 4
 
 
-def test_v2_has_two_hue_ranges():
-    assert len(V2.hue_ranges) == 2
+def test_advanced_has_two_hue_ranges():
+    assert len(ADVANCED.hue_ranges) == 2
 
 
 def test_brighten_clips_at_255():

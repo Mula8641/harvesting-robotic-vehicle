@@ -19,5 +19,5 @@ def test_sends_only_on_change_then_camera_failure_raises():
     centred = disc_image([(127, 127, 20)])
     sent = []
     with pytest.raises(RuntimeError):
-        run_loop(FakeCapture([empty, empty, centred, centred]), "v2", sent.append, show_window=False)
+        run_loop(FakeCapture([empty, empty, centred, centred]), "advanced", sent.append, show_window=False)
     assert sent == [Command.STOP, Command.PICK]

@@ -1,16 +1,14 @@
-# Environment and deviations from the plan
+# Environment and evaluation notes
 
 ## Machine
-- Windows 11, Python 3.14.4 (the plan asks for 3.11 or newer; CI uses 3.11).
+- Windows 11, Python 3.14.4 (the package needs 3.11 or newer; CI uses 3.11).
 - `opencv-python-headless` 5.0.0, `numpy` 2.5.3, `matplotlib` 3.11.2, `pytest` 9.1.1.
 - `ffmpeg` 8.1.1 (gyan.dev build). Demo video length: 302.9 s.
 
-## Deviations
-- The plan names `D:\Application\HarvestingRobot-Vision\tomato-harvesting-robot\`; the repo was built under `D:\Project\HarvestingRobot-Vision\tomato-harvesting-robot\` because the task was started from that folder.
-- Two shared evaluation helpers were added beyond the layout in the plan: `eval/scoring.py` (scores one split; used by both `run_eval.py` and `tune.py` so the logic exists once). `sim/plot.py` makes the simulation plot. `ORIGINAL_CONTROL` and a `PRESETS` name table were added to `config/presets.py`.
+## Notes
+- Two shared evaluation helpers were added as shared code: `eval/scoring.py` (scores one split; used by both `run_eval.py` and `tune.py` so the logic exists once). `sim/plot.py` makes the simulation plot. `ORIGINAL_CONTROL` and a `PRESETS` name table were added to `config/presets.py`.
 - The Laboro images are 12 MP (3024 x 4032 or 3120 x 4160). Detection runs on a copy downscaled to a longest side of 640 px and the boxes are scaled back to original pixels before matching. The `min_area_px` values (50, 150, 400) therefore refer to that 640 px working size. The same setting is used for every preset and for tuning.
 - The `ORIGINAL` preset flips the image vertically (the robot's camera was mounted upside down). Dataset photos are upright, so in evaluation the returned boxes are mirrored back before matching. Without this the original preset scored 0.034 precision and 0.016 recall on train, which measured the flip, not the detector.
-- The plan asks for tests before modules; the modules were written first and tested straight after, in the same session.
 
 ## Source files (read only, copied, never modified)
 Root: `C:\Users\Laria\Documents\Ali Docs\Documents\Hamdard\972-2019 Muhammad Ali Lari FYDP\Report Folder\`

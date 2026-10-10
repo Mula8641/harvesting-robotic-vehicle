@@ -2,9 +2,9 @@
 
 ## Detection pipeline (`tomato_vision/core/`)
 1. Flip the frame vertically if the preset says so (`ORIGINAL` does: the robot camera was mounted upside down).
-2. Add a brightness offset (`ORIGINAL`: +50, clipped to 0..255; `V2`: 0).
-3. Convert to HSV and OR together one `inRange` mask per hue range. `V2` uses two ranges because red wraps around hue 0 and 179; the original used only 0 to 14.
-4. Clean the mask with a morphological open then close (`V2` only; the original had this commented out).
+2. Add a brightness offset (`ORIGINAL`: +50, clipped to 0..255; `ADVANCED`: 0).
+3. Convert to HSV and OR together one `inRange` mask per hue range. `ADVANCED` uses two ranges because red wraps around hue 0 and 179; the original used only 0 to 14.
+4. Clean the mask with a morphological open then close (`ADVANCED` only; the original had this commented out).
 5. Take external contours, drop those below `min_area_px`, sort by area (largest first). The original kept only the largest.
 
 The detector is plain colour segmentation. Anything red or orange and large enough can be a candidate, and touching fruit merge into one blob.

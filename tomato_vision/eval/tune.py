@@ -6,7 +6,7 @@ import random
 import sys
 from pathlib import Path
 
-from tomato_vision.config.presets import V2
+from tomato_vision.config.presets import ADVANCED
 from tomato_vision.config.settings import DetectorConfig, HsvRange
 from tomato_vision.eval.coco_loader import load_ground_truth
 from tomato_vision.eval.metrics import precision_recall_f1
@@ -28,7 +28,7 @@ def candidate_config(hue_upper: int, sat_min: int, val_min: int, min_area: int) 
         HsvRange((0, sat_min, val_min), (hue_upper, 255, 255)),
         HsvRange((179 - hue_upper, sat_min, val_min), (179, 255, 255)),
     )
-    return dataclasses.replace(V2, hue_ranges=ranges, min_area_px=min_area)
+    return dataclasses.replace(ADVANCED, hue_ranges=ranges, min_area_px=min_area)
 
 
 def run_grid(images_dir: Path, ground_truth: dict, max_side: int) -> list[dict]:

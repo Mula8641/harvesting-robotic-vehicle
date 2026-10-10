@@ -12,7 +12,7 @@ ORIGINAL = DetectorConfig(
 )
 
 # Chosen by grid search on the Laboro train split (maximum F1): see results/tuning_train.json.
-V2 = DetectorConfig(
+ADVANCED = DetectorConfig(
     hue_ranges=(
         HsvRange((0, 120, 60), (10, 255, 255)),
         HsvRange((169, 120, 60), (179, 255, 255)),
@@ -34,4 +34,4 @@ ORIGINAL_CONTROL = ControlConfig(
     real_width_cm=4.0,
 )
 
-PRESETS = {"original": ORIGINAL, "v2": V2}
+PRESETS = {"original": ORIGINAL, "advanced": ADVANCED}

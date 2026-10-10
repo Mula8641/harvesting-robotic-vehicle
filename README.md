@@ -1,6 +1,6 @@
-# Tomato Harvesting Robot: vision and alignment
+# Harvesting Robotic Vehicle
 
-Final year project code: tomato detection and vision guided alignment for a Raspberry Pi and ESP32 harvesting robot. The original code, a tested Python rebuild, and a reproducible evaluation.
+My final year project: a vision guided robotic vehicle with a 5 servo arm that finds a red target, aligns to it and picks it. This repository holds the original 2023 project code, and later work that tests and measures the vision and alignment logic.
 
 ![tests](https://github.com/Mula8641/harvesting-robotic-vehicle/actions/workflows/tests.yml/badge.svg)
 
@@ -8,30 +8,18 @@ Final year project code: tomato detection and vision guided alignment for a Rasp
 
 ![The robot](docs/img/robot_side.jpg)
 
-## Background
+## The project (2023)
 
-This is my final year project (B.E. Electrical Engineering, Hamdard University, Karachi, solo project, 2023, supervisor Engr. Sadiq Ur Rehman). The robot is a four wheel vehicle carrying a 5 servo arm. A Raspberry Pi 3B+ with a camera finds a red target, an ESP32 drives the arm servos, and an ultrasonic sensor sits on the vehicle. A companion Android app (not included, source not in the archive) was used to drive the robot from a phone.
+Final year project, B.E. Electrical Engineering, Hamdard University, Karachi. Solo project, 2023, supervisor Engr. Sadiq Ur Rehman. The robot is a four wheel vehicle carrying a 5 servo arm. A Raspberry Pi 3B+ with a camera finds the target by colour, an ESP32 drives the arm servos, and an ultrasonic sensor sits on the vehicle. A companion Android app (not included, source not in the archive) was used to drive the robot from a phone.
 
-The full design is in [my report](docs/FYDP_Report.pdf). The report describes the full design intent; this repository covers the code that exists in the project archive. The **obstacle avoidance code is not in the archive** and is not included. The vision script talks HTTP to a vehicle controller (also not in the archive) while the arm firmware listens on serial; the code that joins them is missing.
-
-## What is in this repo
-
-1. [`original/`](original/README.md): my two original files, byte identical, with provenance.
-2. [`tomato_vision/`](docs/method.md): a modular, tested rebuild of the same vision and alignment logic (OpenCV, HSV colour segmentation), with the fixes listed in [`docs/known_issues_original.md`](docs/known_issues_original.md).
-3. [`tomato_vision/eval/`](docs/results.md): a reproducible evaluation of the detector on a public dataset, and a [simulation](docs/img/alignment_sim.png) of the alignment loop.
-
-## How it works
-
-1. Flip and brighten the frame, convert to HSV, keep red pixels (the rebuild uses two hue ranges because red wraps around the hue axis).
-2. Clean the mask, take contours, drop small ones.
-3. The target's centre is compared with the frame centre; inside a 40 px dead band on both axes the command is PICK, otherwise right, left or advance.
-4. The command is sent to the vehicle over HTTP, only when it changes. The camera then sees the new position, closing the alignment loop.
-5. The arm angles are an open loop mapping from pixel values to servo angles (no feedback on the arm itself).
+What the code does:
+1. The Raspberry Pi script ([`original/rpi_vision_original.py`](original/rpi_vision_original.py)) thresholds the camera frame in HSV, takes the largest red blob and compares its centre with the frame centre. Inside a 40 px dead band on both axes it triggers the pick; otherwise it sends a right, left or advance command to the vehicle over HTTP, only when the command changes. The camera then sees the new position, which closes the alignment loop.
+2. The ESP32 firmware ([`original/esp32_arm_original.ino`](original/esp32_arm_original.ino)) maps pixel values to servo angles for base, shoulder, elbow and wrist, and runs the grip and lift sequence. The arm angles are an open loop mapping, with no feedback on the arm itself.
 
 ```mermaid
 flowchart LR
-    A[Camera frame] --> B[detect_tomatoes]
-    B --> C[decide_command]
+    A[Camera frame] --> B[detect target]
+    B --> C[decide command]
     C --> D{Command changed?}
     D -- yes --> E[HTTP GET to vehicle]
     D -- no --> A
@@ -39,20 +27,11 @@ flowchart LR
     F --> A
 ```
 
-![Detector on frames from my demo video](docs/img/overlay_frame_254.png)
+The full design is in [my report](docs/FYDP_Report.pdf). The report describes the full design intent; this repository covers the code that exists in the project archive. The **obstacle avoidance code is not in the archive** and is not included. The vision script talks HTTP to a vehicle controller (also not in the archive) while the arm firmware listens on serial; the code that joins them is missing. Details: [`original/README.md`](original/README.md).
 
-## Results
+### Results reported in my final year report
 
-**Table 1. Reproducible: this repository, Laboro Tomato test split (161 images, fully ripened fruit, IoU 0.5, each preset run once).** Details and the train split in [`docs/results.md`](docs/results.md).
-
-| preset | tp | fp | fn | precision | recall | F1 | hit@1 |
-|---|---|---|---|---|---|---|---|
-| original (my script's detector) | 46 | 104 | 295 | 0.307 | 0.135 | 0.187 | 0.465 |
-| v2 (rebuild, tuned on the train split) | 106 | 161 | 235 | 0.397 | 0.311 | 0.349 | 0.485 |
-
-The rebuild is better than the original detector but both are weak on greenhouse photos: touching fruit merge, orange and half ripe fruit are counted as ripe, small distant fruit are missed.
-
-**Table 2. Reported in my final year report (section 6.1, linked at [`docs/FYDP_Report.pdf`](docs/FYDP_Report.pdf)), measured on the physical robot, 100 trials each, counts only. Not reproduced by the code in this repository.**
+Section 6.1 of the report, linked at [`docs/FYDP_Report.pdf`](docs/FYDP_Report.pdf). Measured on the physical robot, 100 trials each, counts only. Not reproduced by the code in this repository.
 
 | item | reported |
 |---|---|
@@ -61,14 +40,26 @@ The rebuild is better than the original detector but both are weak on greenhouse
 | Gripping | 90 of 100 |
 | Harvesting | 85 of 100 |
 
-## What I changed from the original
+## Later work
 
-- Two hue ranges instead of one (0 to 14 misses reds near hue 179).
-- Morphological cleanup (open and close), which was commented out.
-- A minimum blob area, so tiny blobs cannot become the target.
-- A timeout on the HTTP call, and a STOP when the vehicle or the camera fails, instead of freezing.
-- Small, separately tested functions instead of one loop, with a `--dry-run` mode that needs no robot.
-- Kept on purpose: the `l`/`r` command mapping and the shared `f` command for up and down.
+After the project I added a tested software layer around the same ideas ([`docs/advancements.md`](docs/advancements.md) lists what is new and what is kept):
+
+- [`tomato_vision/`](docs/method.md): the vision and alignment logic as small, tested modules (OpenCV, HSV colour segmentation), with two hue ranges, mask cleanup, an area filter, an HTTP timeout and a `--dry-run` mode that needs no robot.
+- [`tomato_vision/eval/`](docs/results.md): a reproducible evaluation on a public dataset, so the detector now has numbers anyone can rerun.
+- [`tomato_vision/sim/`](docs/img/alignment_sim.png): a simulation of the alignment loop.
+
+![Detector on a frame from the demo video](docs/img/overlay_frame_254.png)
+
+### Reproducible evaluation
+
+Laboro Tomato test split (161 images, fully ripened fruit, IoU 0.5, each setting run once). The `original` row uses the settings of the 2023 project; `advanced` uses settings tuned on the train split. More in [`docs/results.md`](docs/results.md).
+
+| settings | tp | fp | fn | precision | recall | F1 | hit@1 |
+|---|---|---|---|---|---|---|---|
+| original (2023 project) | 46 | 104 | 295 | 0.307 | 0.135 | 0.187 | 0.465 |
+| advanced (tuned) | 106 | 161 | 235 | 0.397 | 0.311 | 0.349 | 0.485 |
+
+The tuned settings find more ripe fruit, but both are weak on greenhouse photos: touching fruit merge, orange and half ripe fruit are counted as ripe, small distant fruit are missed. These numbers are on a public photo set, not on the robot, and are not comparable with the report figures above.
 
 ## Run it
 
@@ -76,8 +67,8 @@ The rebuild is better than the original detector but both are weak on greenhouse
 python -m venv .venv && .venv/Scripts/activate   # Windows; use .venv/bin/activate elsewhere
 pip install -r requirements.txt
 pytest -q
-python -m tomato_vision.app.detect_cli INPUT_DIR --preset v2 --out OUT_DIR
-python -m tomato_vision.eval.run_eval --images data/laboro/laboro_tomato/test --annotations data/laboro/laboro_tomato/annotations/test.json --preset v2 --split-name test --out results/
+python -m tomato_vision.app.detect_cli INPUT_DIR --preset advanced --out OUT_DIR
+python -m tomato_vision.eval.run_eval --images data/laboro/laboro_tomato/test --annotations data/laboro/laboro_tomato/annotations/test.json --preset advanced --split-name test --out results/
 python -m tomato_vision.app.live_tracker --camera 0 --preset original --dry-run
 ```
 

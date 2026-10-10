@@ -7,13 +7,13 @@ Reproducible evaluation of the HSV detector on the Laboro Tomato dataset (CC BY-
 | preset | split | images | tp | fp | fn | precision | recall | F1 | hit@1 |
 |---|---|---|---|---|---|---|---|---|---|
 | original | test | 161 | 46 | 104 | 295 | 0.307 | 0.135 | 0.187 | 0.465 |
-| v2 | test | 161 | 106 | 161 | 235 | 0.397 | 0.311 | 0.349 | 0.485 |
+| advanced | test | 161 | 106 | 161 | 235 | 0.397 | 0.311 | 0.349 | 0.485 |
 
-`original` is the original script's detector (one hue range 0 to 14, brightness +50, largest blob only). `v2` is the rebuild with parameters tuned on the train split.
+`original` uses the settings of the 2023 project (one hue range 0 to 14, brightness +50, largest blob only). `advanced` is the later work, with parameters tuned on the train split.
 
 hit@1 = share of images containing a ripe tomato where the single largest detection overlaps a real one at IoU 0.5 (what the robot needs to pick one).
 
-On the test split `v2` is better than `original` on precision, recall, F1 and hit@1 (it also has more false positives in absolute terms, 161 against 104, because it finds more boxes): precision 0.397 against 0.307, recall 0.311 against 0.135, but hit@1 improves only from 0.465 to 0.485.
+On the test split `advanced` is ahead of `original` on precision, recall, F1 and hit@1 (it also has more false positives in absolute terms, 161 against 104, because it finds more boxes): precision 0.397 against 0.307, recall 0.311 against 0.135, but hit@1 improves only from 0.465 to 0.485.
 Both presets are weak: in more than half of the images with a ripe tomato the largest detection is not a ripe tomato. In a visual check of six test images (no parameter was changed afterwards) the failures were touching tomatoes merged into one box, orange and half ripe fruit counted as ripe, and small distant fruit missed because of the area filter.
 The original report gives precision 44 % and recall 92 % for the physical robot (counts only, a different, unreleased trial set). The precision here (0.307 for `original`) is of the same order and the recall is far lower (0.135 here against 92 %); the two are not comparable, because the report's trial set and counting method are not available.
 
@@ -22,7 +22,7 @@ The original report gives precision 44 % and recall 92 % for the physical robot 
 | preset | split | images | tp | fp | fn | precision | recall | F1 | hit@1 |
 |---|---|---|---|---|---|---|---|---|---|
 | original | train | 643 | 237 | 381 | 1093 | 0.383 | 0.178 | 0.243 | 0.544 |
-| v2 | train | 643 | 496 | 540 | 834 | 0.479 | 0.373 | 0.419 | 0.571 |
+| advanced | train | 643 | 496 | 540 | 834 | 0.479 | 0.373 | 0.419 | 0.571 |
 
 ## Tuning
 

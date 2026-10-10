@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from tests.helpers import disc_image
-from tomato_vision.config.presets import ORIGINAL, V2
+from tomato_vision.config.presets import ORIGINAL, ADVANCED
 from tomato_vision.core.candidates import Detection, find_candidates
 from tomato_vision.core.distance import estimate_distance_cm
 from tomato_vision.core.pipeline import detect_tomatoes
@@ -60,8 +60,8 @@ def test_pipeline_original_keeps_largest_only():
     assert detections[0].center_y == pytest.approx(194, abs=1)
 
 
-def test_pipeline_v2_returns_both():
-    assert len(detect_tomatoes(disc_image([(60, 60, 30), (190, 190, 15)]), V2)) == 2
+def test_pipeline_advanced_returns_both():
+    assert len(detect_tomatoes(disc_image([(60, 60, 30), (190, 190, 15)]), ADVANCED)) == 2
 
 
 def test_detection_is_frozen():

@@ -1,6 +1,6 @@
-# Original code (unmodified)
+# Original project code (2023)
 
-Two files from my final year project (B.E. Electrical Engineering, Hamdard University, Karachi, 2023). They are byte identical copies of the files in my project archive and have not been edited.
+The two programs that ran on my final year project robot (B.E. Electrical Engineering, Hamdard University, Karachi, 2023). They are byte identical copies of the files in my project archive and have not been edited since.
 
 | File | Source in the archive | What it is |
 |---|---|---|
