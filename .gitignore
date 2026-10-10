@@ -1,0 +1,7 @@
+data/laboro/
+results/tmp/
+__pycache__/
+.venv/
+.pytest_cache/
+*.pyc
+results/tune.log

@@ -1,0 +1,10 @@
+[project]
+name = "tomato-vision"
+version = "0.1.0"
+description = "Tomato detection and vision guided alignment for a Raspberry Pi and ESP32 harvesting robot"
+requires-python = ">=3.11"
+dependencies = ["opencv-python-headless", "numpy"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
