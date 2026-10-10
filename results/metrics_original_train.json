@@ -1,0 +1,45 @@
+{
+  "preset": "original",
+  "split": "train",
+  "images": 643,
+  "images_skipped": 0,
+  "tp": 237,
+  "fp": 381,
+  "fn": 1093,
+  "precision": 0.38349514563106796,
+  "recall": 0.17819548872180452,
+  "f1": 0.24332648870636553,
+  "hit_at_1": 0.5435779816513762,
+  "hit_at_1_images": 436,
+  "iou_threshold": 0.5,
+  "max_side_px": 640,
+  "config": {
+    "hue_ranges": [
+      {
+        "lower": [
+          0,
+          47,
+          40
+        ],
+        "upper": [
+          14,
+          255,
+          255
+        ]
+      }
+    ],
+    "brightness_offset": 50,
+    "flip_vertical": true,
+    "morph_kernel_px": 0,
+    "morph_open_iterations": 0,
+    "morph_close_iterations": 0,
+    "min_area_px": 1,
+    "keep_largest_only": true
+  },
+  "date": "2026-10-10",
+  "versions": {
+    "python": "3.14.4",
+    "opencv": "5.0.0",
+    "numpy": "2.5.3"
+  }
+}
