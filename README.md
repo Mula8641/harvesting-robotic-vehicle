@@ -13,7 +13,7 @@ My final year project: a vision guided robotic vehicle with a 5 servo arm that f
 Final year project, B.E. Electrical Engineering, Hamdard University, Karachi. Solo project, 2023, supervisor Engr. Sadiq Ur Rehman. The robot is a four wheel vehicle carrying a 5 servo arm. A Raspberry Pi 3B+ with a camera finds the target by colour, an ESP32 drives the arm servos, and an ultrasonic sensor sits on the vehicle. A companion Android app (not included, source not in the archive) was used to drive the robot from a phone.
 
 What the code does:
-1. The Raspberry Pi script ([`original/rpi_vision_original.py`](original/rpi_vision_original.py)) thresholds the camera frame in HSV, takes the largest red blob and compares its centre with the frame centre. Inside a 40 px dead band on both axes it triggers the pick; otherwise it sends a right, left or advance command to the vehicle over HTTP, only when the command changes. The camera then sees the new position, which closes the alignment loop.
+1. The Raspberry Pi script ([`original/rpi_vision_original.py`](original/rpi_vision_original.py)) thresholds the camera frame in HSV, takes the largest red blob and compares its centre with the frame centre. It sends a right, left, advance, stop or pick command to the vehicle over HTTP, only when the state changes. Inside a 40 px dead band on both axes the intended command is the pick (`sa`); see the note below on the archived script. The camera then sees the new position, which closes the alignment loop.
 2. The ESP32 firmware ([`original/esp32_arm_original.ino`](original/esp32_arm_original.ino)) maps pixel values to servo angles for base, shoulder, elbow and wrist, and runs the grip and lift sequence. The arm angles are an open loop mapping, with no feedback on the arm itself.
 
 ```mermaid
@@ -26,6 +26,8 @@ flowchart LR
     E --> F[Vehicle moves]
     F --> A
 ```
+
+**Note on the archived script.** Reading the control flow carefully, the `sa` (pick) branch of `rpi_vision_original.py` cannot be reached: the edge trigger flag is always 0 by the time that branch runs, and a target centred in x but off in y makes the script alternate `f` and `s` each frame. I checked this by running the script's logic over every sequence of target positions (see [`docs/advancements.md`](docs/advancements.md)). The robot demonstrably picked in my trials, so the version that ran on it, or the way the pick was triggered, may differ from this archived file; I cannot tell which from the archive. The later work implements the intended behaviour.
 
 The full design is in [my report](docs/FYDP_Report.pdf). The report describes the full design intent; this repository covers the code that exists in the project archive. The **obstacle avoidance code is not in the archive** and is not included. The vision script talks HTTP to a vehicle controller (also not in the archive) while the arm firmware listens on serial; the code that joins them is missing. Details: [`original/README.md`](original/README.md).
 

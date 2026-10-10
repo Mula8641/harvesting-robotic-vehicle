@@ -20,6 +20,8 @@ Frame 255 x 255, dead band 40 px around the frame centre (127.5, 127.5).
 | x in band, abs(centre y - 127.5) > 40 | ADVANCE | `f` |
 | x and y in band | PICK | `sa` |
 
+The table is the intended behaviour. The archived 2023 script never reaches the `sa` branch (see `advancements.md`); the later work does.
+
 `l` for a target on the right and `r` for the left copy the original script; they are tied to the vehicle wiring and the flipped camera. The original sends `f` for a target above and below the band; that is kept.
 
 ## Arm mapping (`control/arm_mapping.py`)

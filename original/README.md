@@ -17,6 +17,9 @@ SHA-256 of the copies:
 
 `esp32_arm_original.ino` (about 100 lines) drives 5 servos (GPIO 16, 17, 5, 18, 19: base, shoulder, elbow, wrist, gripper). It reads serial lines: `T,xxx,yyy` maps x and y (0..255) to base, shoulder and elbow angles; `P,...,zzz` maps z to the wrist angle, closes the gripper, lifts the arm and resets, with blocking `delay()` calls.
 
+## Observation
+The pick command `sa` cannot be reached in this file's control flow, and a target centred in x but off in y makes it alternate `f` and `s`; details in [`docs/advancements.md`](../docs/advancements.md). The robot did pick in my trials, so the version that ran on it may differ.
+
 ## Gaps
 
 - The vision script talks **HTTP** to a vehicle controller that is not in the archive. The arm firmware listens on **serial**. The code that joins the two is not in the archive.
